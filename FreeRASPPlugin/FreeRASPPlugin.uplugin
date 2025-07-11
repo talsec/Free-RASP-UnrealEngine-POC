@@ -1,0 +1,28 @@
+{
+    "FileVersion": 3,
+    "Version": 2,
+    "VersionName": "1.1",
+    "FriendlyName": "FreeRASP",
+    "Description": "FreeRASP plugin from Talsec",
+    "Category": "Android",
+    "CreatedBy": "Talsec",
+    "CreatedByURL": "",
+    "DocsURL": "",
+    "MarketplaceURL": "",
+    "SupportURL": "",
+    "EnabledByDefault": true,
+    "CanContainContent": false,
+    "IsBetaVersion": false,
+    "IsExperimentalVersion": false,
+    "Installed": false,
+    "Modules": [
+        {
+            "Name": "FreeRASPPlugin",
+            "Type": "Runtime",
+            "LoadingPhase": "Default",
+            "WhitelistPlatforms": [
+                "Android"
+            ]
+        }
+    ]
+}
