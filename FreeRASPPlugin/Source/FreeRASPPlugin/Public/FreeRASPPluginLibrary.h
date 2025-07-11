@@ -11,15 +11,41 @@
 
 #include "FreeRASPPluginLibrary.generated.h"
 
+UENUM(BlueprintType)
+enum class EThreatType : uint8
+{
+    RootDetected,
+    TamperDetected,
+    DebuggerDetected,
+    EmulatorDetected,
+    UntrustedInstallationSourceDetected,
+    HookDetected,
+    DeviceBindingDetected,
+    ObfuscationIssuesDetected,
+    ScreenshotDetected,
+    ScreenRecordingDetected,
+    UnlockedDeviceDetected,
+    HardwareBackedKeystoreNotAvailableDetected,
+    DeveloperModeDetected,
+    ADBEnabledDetected,
+    SystemVPNDetected,
+    Unknown,
+};
+
 /**
  * Delegate for handling threat detection callbacks from the FreeRASP library.
  * 
  * This delegate is called when the Android FreeRASP library detects a security threat.
- * It provides a message string describing the nature of the detected threat.
+ * It provides an enum value describing the nature of the detected threat.
  * 
- * @param Message A string containing details about the detected security threat
+ * @param ThreatType An enum value indicating the type of security threat detected
  */
-DECLARE_DYNAMIC_DELEGATE_OneParam(FOnAndroidThreatDetectedCallback, const FString&, Message);
+DECLARE_DYNAMIC_DELEGATE_OneParam(FOnAndroidThreatDetectedCallback, EThreatType, ThreatType);
+
+// Forward declaration for JNI function
+#if PLATFORM_ANDROID
+extern "C" JNIEXPORT void JNICALL Java_com_talsec_free_rasp_Controller_threatDetected(JNIEnv* env, jobject thiz, jstring message);
+#endif
 
 UCLASS()
 class FREERASPPLUGIN_API UFreeRASPPluginLibrary : public UGameInstanceSubsystem
@@ -61,7 +87,6 @@ public:
      * @warning The signing certificate hashes must match exactly with your app's actual signing certificates.
      *          Incorrect hashes will cause the security checks to fail and may trigger false threat detections.
      * 
-     * );
      */
     UFUNCTION(BlueprintCallable, Category = "FreeRASPPlugin")
     bool InitializeTalsec(const FString& PackageName, 
@@ -90,7 +115,10 @@ public:
     void SetOnAndroidThreatDetectedCallback(FOnAndroidThreatDetectedCallback Callback);
     
     // Static callback function that Java/JNI can call
-    static void OnThreatDetected(const FString& Message);
+    static void OnThreatDetected(EThreatType ThreatType);
+
+    // Helper function to convert string to enum
+    static EThreatType StringToThreatType(FString Message);
 
 private:
     // Static delegate instance
@@ -100,15 +128,9 @@ private:
 #if PLATFORM_ANDROID
 
     jobject ControllerInstance;
-
-    // Helper function to get JNI environment
-    static JNIEnv* GetJNIEnv();
     
     // Helper function to convert FString to jstring
     static jstring FStringToJString(JNIEnv* Env, const FString& String);
-    
-    // Helper function to convert jstring to FString
-    static FString JStringToFString(JNIEnv* Env, jstring JavaString);
     
     // Helper function to convert TArray<FString> to jobjectArray
     static jobjectArray FStringArrayToJObjectArray(JNIEnv* Env, const TArray<FString>& StringArray);

@@ -2,7 +2,29 @@
 #include "Engine/Engine.h"
 #include "HAL/Platform.h"
 
+#if PLATFORM_ANDROID
+
 FOnAndroidThreatDetectedCallback UFreeRASPPluginLibrary::OnAndroidThreatDetectedCallback;   
+
+// JNI functions that Java will call
+extern "C" 
+{
+    JNIEXPORT void JNICALL Java_com_talsec_free_rasp_Controller_threatDetected(JNIEnv* env, jobject thiz, jstring message)
+    {
+        if (!message)
+        {
+            return;
+        }
+        const char* UTFString = env->GetStringUTFChars(message, nullptr);
+        FString MessageString = FString(UTF8_TO_TCHAR(UTFString));
+        env->ReleaseStringUTFChars(message, UTFString);
+
+        // Call the static callback function
+       // Convert string to enum and call the static callback function
+       EThreatType ThreatType = UFreeRASPPluginLibrary::StringToThreatType(MessageString);
+       UFreeRASPPluginLibrary::OnThreatDetected(ThreatType);
+    }
+}
 
 void UFreeRASPPluginLibrary::SetOnAndroidThreatDetectedCallback(FOnAndroidThreatDetectedCallback Callback)
 {
@@ -13,11 +35,10 @@ void UFreeRASPPluginLibrary::SetOnAndroidThreatDetectedCallback(FOnAndroidThreat
 
 void UFreeRASPPluginLibrary::Initialize(FSubsystemCollectionBase& Collection)
 {
-#if PLATFORM_ANDROID
 
     UE_LOG(LogTemp, Warning, TEXT("Initialize(FSubsystemCollectionBase& Collection) called"));
 
-    JNIEnv* Env = GetJNIEnv();
+    JNIEnv* Env = FAndroidApplication::GetJavaEnv();
     if (!Env)
     {
         return;
@@ -32,20 +53,16 @@ void UFreeRASPPluginLibrary::Initialize(FSubsystemCollectionBase& Collection)
         ControllerInstance = Env->NewObject(ControllerClass, Constructor);
         UE_LOG(LogTemp, Warning, TEXT("ControllerInstance created"));
     }
-#endif  // PLATFORM_ANDROID
 }
 
 void UFreeRASPPluginLibrary::Deinitialize()
 {
-#if PLATFORM_ANDROID
     // Clean up the instance
-    JNIEnv* Env = GetJNIEnv();
-    if (!Env)
-    {
+    JNIEnv* Env = FAndroidApplication::GetJavaEnv();
+    if (!Env){
         return;
     }
     Env->DeleteLocalRef(ControllerInstance);
-#endif  // SUPPORTED_PLATFORM
 }
 
 bool UFreeRASPPluginLibrary::InitializeTalsec(const FString& PackageName, 
@@ -56,9 +73,9 @@ bool UFreeRASPPluginLibrary::InitializeTalsec(const FString& PackageName,
     // Initialize FreeRASP library with security configuration
     // This method sets up the Android FreeRASP library with the provided security parameters
     // including package name, certificate hashes, supported stores, and production mode flag
-#if PLATFORM_ANDROID
+    
     // Get JNI environment for Java interop
-    JNIEnv* Env = GetJNIEnv();
+    JNIEnv* Env = FAndroidApplication::GetJavaEnv();
     if (!Env)
     {
         return false;
@@ -97,8 +114,6 @@ bool UFreeRASPPluginLibrary::InitializeTalsec(const FString& PackageName,
                  "(Landroid/content/Context;Ljava/lang/String;[Ljava/lang/String;[Ljava/lang/String;Ljava/lang/String;Z)V");
             if (InitializeTalsecMethod)
             {
-                UE_LOG(LogTemp, Warning, TEXT("InitializeTalsecMethod found! Proceeding to call it"));
-                
                 // Convert Unreal Engine parameters to JNI types for Java interop
                 jstring PackageNameJString = FStringToJString(Env, PackageName);
                 jstring WatcherEmailAddressJString = FStringToJString(Env, WatcherEmailAddress);
@@ -122,22 +137,57 @@ bool UFreeRASPPluginLibrary::InitializeTalsec(const FString& PackageName,
             }
         } 
     }
-#endif
     return false;
 }
 
 
 // Static callback methods that JNI will call
-void UFreeRASPPluginLibrary::OnThreatDetected(const FString& Message)
+void UFreeRASPPluginLibrary::OnThreatDetected(EThreatType ThreatType)
 {
     if (OnAndroidThreatDetectedCallback.IsBound())
     {
-        OnAndroidThreatDetectedCallback.Execute(Message);
+        OnAndroidThreatDetectedCallback.Execute(ThreatType);
     }
 }
 
+// Helper function to convert string message to enum
+EThreatType UFreeRASPPluginLibrary::StringToThreatType(FString Message)
+{
+    if (Message == TEXT("onRootDetected"))
+        return EThreatType::RootDetected;
+    else if (Message == TEXT("onTamperDetected"))
+        return EThreatType::TamperDetected;
+    else if (Message == TEXT("onDebuggerDetected"))
+        return EThreatType::DebuggerDetected;
+    else if (Message == TEXT("onEmulatorDetected"))
+        return EThreatType::EmulatorDetected;
+    else if (Message == TEXT("onUntrustedInstallationSourceDetected"))
+        return EThreatType::UntrustedInstallationSourceDetected;
+    else if (Message == TEXT("onHookDetected"))
+        return EThreatType::HookDetected;
+    else if (Message == TEXT("onDeviceBindingDetected"))
+        return EThreatType::DeviceBindingDetected;
+    else if (Message == TEXT("onObfuscationIssuesDetected"))
+        return EThreatType::ObfuscationIssuesDetected;
+    else if (Message == TEXT("onScreenshotDetected"))
+        return EThreatType::ScreenshotDetected;
+    else if (Message == TEXT("onScreenRecordingDetected"))
+        return EThreatType::ScreenRecordingDetected;
+    else if (Message == TEXT("onUnlockedDeviceDetected"))
+        return EThreatType::UnlockedDeviceDetected;
+    else if (Message == TEXT("onHardwareBackedKeystoreNotAvailableDetected"))
+        return EThreatType::HardwareBackedKeystoreNotAvailableDetected;
+    else if (Message == TEXT("onDeveloperModeDetected"))
+        return EThreatType::DeveloperModeDetected;
+    else if (Message == TEXT("onADBEnabledDetected"))
+        return EThreatType::ADBEnabledDetected;
+    else if (Message == TEXT("onSystemVPNDetected"))
+        return EThreatType::SystemVPNDetected;
+    else
+        return EThreatType::Unknown; // Default fallback
+}
+
 // static helper method
-#if PLATFORM_ANDROID
 jobjectArray UFreeRASPPluginLibrary::FStringArrayToJObjectArray(JNIEnv* Env, const TArray<FString>& StringArray)
 {
     if (!Env)
@@ -172,14 +222,6 @@ jobjectArray UFreeRASPPluginLibrary::FStringArrayToJObjectArray(JNIEnv* Env, con
     Env->DeleteLocalRef(StringClass);
     return Result;
 }
-#endif
-
-
-#if PLATFORM_ANDROID
-JNIEnv* UFreeRASPPluginLibrary::GetJNIEnv()
-{
-    return FAndroidApplication::GetJavaEnv();
-}
 
 jstring UFreeRASPPluginLibrary::FStringToJString(JNIEnv* Env, const FString& String)
 {
@@ -187,34 +229,4 @@ jstring UFreeRASPPluginLibrary::FStringToJString(JNIEnv* Env, const FString& Str
     return Env->NewStringUTF(Converter.Get());
 }
 
-FString UFreeRASPPluginLibrary::JStringToFString(JNIEnv* Env, jstring JavaString)
-{
-    if (!JavaString)
-    {
-        return FString();
-    }
-
-    const char* UTFString = Env->GetStringUTFChars(JavaString, nullptr);
-    FString Result = FString(UTF8_TO_TCHAR(UTFString));
-    Env->ReleaseStringUTFChars(JavaString, UTFString);
-    return Result;
-}
-
-// JNI functions that Java will call
-extern "C" 
-{
-    JNIEXPORT void JNICALL Java_com_talsec_free_rasp_Controller_threatDetected(JNIEnv* env, jobject thiz, jstring message)
-    {
-        if (!message)
-        {
-            return;
-        }
-        const char* UTFString = env->GetStringUTFChars(message, nullptr);
-        FString MessageString = FString(UTF8_TO_TCHAR(UTFString));
-        env->ReleaseStringUTFChars(message, UTFString);
-
-        // Call the static callback function
-        UFreeRASPPluginLibrary::OnThreatDetected(MessageString);
-    }
-}
 #endif
