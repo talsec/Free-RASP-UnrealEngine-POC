@@ -32,7 +32,37 @@ public:
     virtual void Deinitialize() override;
 
     
-    // Function to call Java method from Unreal
+    /**
+     * Initializes the FreeRASP library with security configuration parameters.
+     * 
+     * This method initializes the Android FreeRASP library
+     * with the specified security parameters. It sets up threat detection capabilities including
+     * root detection, emulator detection, debugger detection, and other security checks.
+     * 
+     * @param PackageName The package name of your Android application (e.g., "com.yourcompany.yourapp")
+     * @param SigningCertificateBase64Hash Array of base64-encoded SHA-256 hashes of your app's signing certificates.
+     *                                     This is used to verify the app's authenticity and detect tampering.
+     * @param SupportedAlternativeStores Array of supported alternative app store names (e.g., "Google Play Store").
+     *                                   This helps FreeRASP distinguish between legitimate and unauthorized app sources.
+     * @param WatcherEmailAddress Email address where security alerts and threat notifications will be sent. 
+     * @param IsProd Boolean flag indicating whether the app is running in production mode (true) or development mode (false).
+     *               In development mode, some security checks may be relaxed for debugging purposes.
+     * 
+     * @return true if initialization was successful, false otherwise.
+     * 
+     * @note This method is only functional on Android platforms. On other platforms, it will return false.
+     * 
+     * @note The method requires a valid Android application context and JNI environment to function properly.
+     *       Make sure the Android application is properly initialized before calling this method.
+     * 
+     * @note This method should be called after the FreeRASPPluginLibrary subsystem has been initialized
+     *       (typically in your GameInstance or early in the application lifecycle).
+     * 
+     * @warning The signing certificate hashes must match exactly with your app's actual signing certificates.
+     *          Incorrect hashes will cause the security checks to fail and may trigger false threat detections.
+     * 
+     * );
+     */
     UFUNCTION(BlueprintCallable, Category = "FreeRASPPlugin")
     bool InitializeTalsec(const FString& PackageName, 
         const TArray<FString>& SigningCertificateBase64Hash, 
@@ -55,10 +85,6 @@ public:
      * @note The callback is stored as a static delegate, so only one callback can be active at a time.
      *       Calling this method multiple times will replace the previous callback.
      * 
-     * @example
-     * // In Blueprint or C++:
-     * // Create a custom event or function that takes a string parameter
-     * // Then call SetOnAndroidThreatDetectedCallback and pass your function as the parameter
      */
     UFUNCTION(BlueprintCallable, Category = "FreeRASPPlugin")
     void SetOnAndroidThreatDetectedCallback(FOnAndroidThreatDetectedCallback Callback);

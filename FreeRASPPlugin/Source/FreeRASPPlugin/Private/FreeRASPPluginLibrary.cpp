@@ -53,24 +53,28 @@ bool UFreeRASPPluginLibrary::InitializeTalsec(const FString& PackageName,
     const TArray<FString>& SupportedAlternativeStores, 
     const FString& WatcherEmailAddress, bool IsProd)
 {
+    // Initialize FreeRASP library with security configuration
+    // This method sets up the Android FreeRASP library with the provided security parameters
+    // including package name, certificate hashes, supported stores, and production mode flag
 #if PLATFORM_ANDROID
+    // Get JNI environment for Java interop
     JNIEnv* Env = GetJNIEnv();
     if (!Env)
     {
         return false;
     }
 
-    // Get the application context
+    // Get the Android application context required by FreeRASP
     jobject ApplicationContext = nullptr;
     
-    // Get context from Android application
+    // Retrieve context from the current Android activity
     if (FAndroidApplication::GetGameActivityThis())
     {
-        // Get the activity class
+        // Get the activity class to access its methods
         jclass ActivityClass = Env->GetObjectClass(FAndroidApplication::GetGameActivityThis());
         if (ActivityClass)
         {
-            // Get the getApplicationContext method
+            // Get the getApplicationContext method to obtain the application context
             jmethodID GetContextMethod = Env->GetMethodID(ActivityClass, "getApplicationContext", "()Landroid/content/Context;");
             if (GetContextMethod)
             {
@@ -83,25 +87,28 @@ bool UFreeRASPPluginLibrary::InitializeTalsec(const FString& PackageName,
 
     if (ApplicationContext)
     {
-        // Get the activity class
+        // Find the FreeRASP Controller Java class
         jclass ControllerClass = FAndroidApplication::FindJavaClass("com/talsec/free/rasp/Controller");
         if (ControllerClass)
         {
-            // Get the method ID
+            // Get the initializeTalsec method ID with the correct signature
+            // Signature: (Context, String, String[], String[], String, boolean) -> void
             jmethodID InitializeTalsecMethod = Env->GetMethodID(ControllerClass, "initializeTalsec",
                  "(Landroid/content/Context;Ljava/lang/String;[Ljava/lang/String;[Ljava/lang/String;Ljava/lang/String;Z)V");
             if (InitializeTalsecMethod)
             {
                 UE_LOG(LogTemp, Warning, TEXT("InitializeTalsecMethod found! Proceeding to call it"));
-                // Convert all parameters to JNI types
+                
+                // Convert Unreal Engine parameters to JNI types for Java interop
                 jstring PackageNameJString = FStringToJString(Env, PackageName);
                 jstring WatcherEmailAddressJString = FStringToJString(Env, WatcherEmailAddress);
                 jboolean IsProdJBoolean = IsProd ? JNI_TRUE : JNI_FALSE;
-                // Convert arrays to jobjectArray
+                
+                // Convert string arrays to Java object arrays
                 jobjectArray SigningCertArray = FStringArrayToJObjectArray(Env, SigningCertificateBase64Hash);
                 jobjectArray SupportedStoresArray = FStringArrayToJObjectArray(Env, SupportedAlternativeStores);
 
-                // Call the Java method
+                // Call the Java FreeRASP initialization method with all parameters
                 Env->CallVoidMethod(ControllerInstance, InitializeTalsecMethod, ApplicationContext, PackageNameJString, SigningCertArray, SupportedStoresArray, WatcherEmailAddressJString, IsProdJBoolean);
 
                 // Clean up local references
