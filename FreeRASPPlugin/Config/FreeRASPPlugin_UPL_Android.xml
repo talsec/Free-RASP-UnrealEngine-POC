@@ -5,7 +5,7 @@
             android {
                 sourceSets {
                     main {
-                        java.srcDirs += ['$S(PluginDir)/../../ThirdParty/Android/Java']
+                        java.srcDirs += ['$S(PluginDir)/../ThirdParty/Android']
                     }
                 }
             }
@@ -23,13 +23,12 @@
     </buildGradleAdditions>
 
     <resourceCopies>
-        <copyDir src="$S(PluginDir)/../../ThirdParty/Android/Java" 
+        <copyDir src="$S(PluginDir)/../ThirdParty/Android/" 
                  dst="$S(BuildDir)/src/main/" />
     </resourceCopies>
 
     <!-- Add permissions -->
     <androidManifestUpdates>
         <addPermission android:name="android.permission.ACCESS_NETWORK_STATE" />
-        <addPermission android:name="android.permission.READ_PHONE_STATE" />
     </androidManifestUpdates>
 </root>

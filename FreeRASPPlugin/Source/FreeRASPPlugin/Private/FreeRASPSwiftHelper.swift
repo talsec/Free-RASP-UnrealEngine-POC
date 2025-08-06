@@ -28,9 +28,6 @@ public class FreeRASPSwiftHelper: NSObject {
             isProd: isProd
         )
         Talsec.start(config: config)
-        
-        // Log initialization
-        logger.info("Talsec initialized with bundle IDs: \(appBundleIds), team ID: \(appTeamId), isProd: \(isProd)")
     }
 }
 

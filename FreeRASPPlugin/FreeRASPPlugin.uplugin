@@ -4,7 +4,7 @@
     "VersionName": "1.1",
     "FriendlyName": "FreeRASP",
     "Description": "FreeRASP plugin from Talsec",
-    "Category": "Android",
+    "Category": "Security",
     "CreatedBy": "Talsec",
     "CreatedByURL": "",
     "DocsURL": "",
@@ -21,6 +21,7 @@
             "Type": "Runtime",
             "LoadingPhase": "Default",
             "WhitelistPlatforms": [
+                "IOS",
                 "Android"
             ]
         }

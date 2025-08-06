@@ -1,0 +1,7 @@
+  <?xml version="1.0" encoding="utf-8"?>
+  <root>
+      <init>
+          <log text="FreeRASPPlugin UPL init"/>
+          <copyDir src="$S(PluginDir)/../Thirdparty/iOS/TalsecRuntime.xcframework" dst="$S(BuildDir)/Frameworks/TalsecRuntime.xcframework" />
+      </init>
+  </root>

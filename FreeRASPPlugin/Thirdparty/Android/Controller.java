@@ -51,14 +51,12 @@ public class Controller implements ThreatListener.ThreatDetected, ThreatListener
 
     @Override
     public void onRootDetected() {
-        Log.d(TAG, "Root detected");
-        threatDetected("onRootDetected");
+        threatDetected("root");
     }
 
     @Override
     public void onTamperDetected() {
-        Log.d(TAG, "Tamper detected");
-        threatDetected("onTamperDetected");
+        threatDetected("tamper");
     }
 
     @Override
@@ -68,78 +66,66 @@ public class Controller implements ThreatListener.ThreatDetected, ThreatListener
 
     @Override
     public void onDebuggerDetected() {
-        Log.d(TAG, "Debugger detected");
-        threatDetected("onDebuggerDetected");
+        threatDetected("debugger");
     }
 
     @Override
-    public void onEmulatorDetected() {
-        Log.d(TAG, "Emulator detected");
-        threatDetected("onEmulatorDetected");
+    public void onEmulatorDetected() {      
+        threatDetected("emulator");
     }
 
     @Override
     public void onUntrustedInstallationSourceDetected() {
-        Log.d(TAG, "Untrusted installation source detected");
-        threatDetected("onUntrustedInstallationSourceDetected");
+        threatDetected("untrustedInstallationSource");
     }
 
     @Override
     public void onHookDetected() {
-        Log.d(TAG, "Hook detected");
-        threatDetected("onHookDetected");
+        threatDetected("hook");
     }
 
     @Override
     public void onDeviceBindingDetected() {
-        Log.d(TAG, "Device binding detected");
-        threatDetected("onDeviceBindingDetected");
+        threatDetected("deviceBinding");
     }
 
     @Override
     public void onObfuscationIssuesDetected() {
-        Log.d(TAG, "Obfuscation issues detected");
-        threatDetected("onObfuscationIssuesDetected");
+        threatDetected("obfuscationIssues");
     }
 
     @Override
     public void onScreenshotDetected() {
-        Log.d(TAG, "Screenshot detected");
-        threatDetected("onScreenshotDetected");
+        threatDetected("screenshot");
     }
 
     @Override
     public void onScreenRecordingDetected() {
-        threatDetected("onScreenRecordingDetected");
+        threatDetected("screenRecording");
     }
 
     @Override
     public void onUnlockedDeviceDetected() {
-        Log.d(TAG, "Unlocked device detected");
-        threatDetected("onUnlockedDeviceDetected");
+        threatDetected("unlockedDevice");
     }
 
     @Override
     public void onHardwareBackedKeystoreNotAvailableDetected() {
-        Log.d(TAG, "Hardware backed keystore not available detected");
-        threatDetected("onHardwareBackedKeystoreNotAvailableDetected");
+        threatDetected("hardwareBackedKeystoreNotAvailable");
     }
 
     @Override
     public void onDeveloperModeDetected() {
-        Log.d(TAG, "Developer mode detected");
-        threatDetected("onDeveloperModeDetected");
+        threatDetected("developerMode");
     }
 
     @Override
     public void onADBEnabledDetected() {
-        Log.d(TAG, "ADB enabled detected");
-        threatDetected("onADBEnabledDetected");
+        threatDetected("adbEnabled");
     }
 
     @Override
     public void onSystemVPNDetected() {
-        Log.d(TAG, "System VPN detected");
-        threatDetected("onSystemVPNDetected");
+        threatDetected("systemVPN");
     }       
 }

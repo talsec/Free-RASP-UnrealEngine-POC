@@ -1,15 +1,19 @@
 #include "FreeRASPPlugin.h"
+#include "CoreMinimal.h"
+#include "Modules/ModuleManager.h"
 
 #define LOCTEXT_NAMESPACE "FFreeRASPPluginModule"
 
+DEFINE_LOG_CATEGORY(LogFreeRASPPlugin);
+
 void FFreeRASPPluginModule::StartupModule()
 {
-    // This code will execute after your module is loaded into memory
+    UE_LOG(LogFreeRASPPlugin, Warning, TEXT("FreeRASPPlugin module has been loaded"));
 }
 
 void FFreeRASPPluginModule::ShutdownModule()
 {
-    // This function may be called during shutdown to clean up your module
+    UE_LOG(LogFreeRASPPlugin, Warning, TEXT("FreeRASPPlugin module has been unloaded"));
 }
 
 #undef LOCTEXT_NAMESPACE
