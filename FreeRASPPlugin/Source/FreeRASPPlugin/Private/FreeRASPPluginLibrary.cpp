@@ -41,8 +41,6 @@ extern "C" void NotifyUnrealSecurityThreat(const char* threatType)
 
 void UFreeRASPPluginLibrary::Initialize(FSubsystemCollectionBase& Collection)
 {
-    UE_LOG(LogTemp, Warning, TEXT("Initialize(FSubsystemCollectionBase& Collection) called"));   
-
     #if PLATFORM_ANDROID
         JNIEnv* Env = FAndroidApplication::GetJavaEnv();
         if (!Env)
@@ -64,8 +62,6 @@ void UFreeRASPPluginLibrary::Initialize(FSubsystemCollectionBase& Collection)
 
 void UFreeRASPPluginLibrary::Deinitialize()
 {
-    UE_LOG(LogTemp, Warning, TEXT("Deinitialize() called"));
-
     #if PLATFORM_ANDROID
         // Clean up the instance
         JNIEnv* Env = FAndroidApplication::GetJavaEnv();
@@ -178,8 +174,6 @@ void UFreeRASPPluginLibrary::SendThreatToUE(const FString& threatType) {
             if (UFreeRASPPluginLibrary* Library = World->GetGameInstance()->GetSubsystem<UFreeRASPPluginLibrary>())
             {
                 // Convert threat type string to the correct ThreatType enum
-                UE_LOG(LogTemp, Warning, TEXT("Threat type: %s"), *threatType);
-
                 // Static map for threat type conversion - initialized once
                 static const TMap<FString, ThreatType> ThreatTypeMap = {
                     {TEXT("onPrivilegedAccess"), ThreatType::OnPrivilegedAccess},
