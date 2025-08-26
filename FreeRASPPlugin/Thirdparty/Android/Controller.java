@@ -7,7 +7,6 @@ import android.telephony.TelephonyManager;
 import android.widget.Toast;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
 
 import com.aheaditec.talsec_security.security.api.SuspiciousAppInfo;
 import com.aheaditec.talsec_security.security.api.Talsec;
@@ -33,7 +32,6 @@ public class Controller implements ThreatListener.ThreatDetected, ThreatListener
                                    String [] signingCertificateBase64Hash,
                                    String [] supportedAlternativeStores,
                                    String watcherEmailAddress, boolean isProd) {
-        Log.d(TAG, "initializeTalsec called");
         if(!talSecInitialized) {
             TalsecConfig config = new TalsecConfig.Builder(packageName,
                     signingCertificateBase64Hash)
@@ -45,18 +43,17 @@ public class Controller implements ThreatListener.ThreatDetected, ThreatListener
             threatListener.registerListener(context);
             Talsec.start(context, config);
             talSecInitialized = true;
-            Log.d(TAG, "freeRASP initialized");
         }
     }
 
     @Override
     public void onRootDetected() {
-        threatDetected("root");
+        threatDetected("onPrivilegedAccess");
     }
 
     @Override
     public void onTamperDetected() {
-        threatDetected("tamper");
+        threatDetected("onAppIntegrity");
     }
 
     @Override
@@ -66,66 +63,66 @@ public class Controller implements ThreatListener.ThreatDetected, ThreatListener
 
     @Override
     public void onDebuggerDetected() {
-        threatDetected("debugger");
+        threatDetected("onDebug");
     }
 
     @Override
     public void onEmulatorDetected() {      
-        threatDetected("emulator");
+        threatDetected("onSimulator");
     }
 
     @Override
     public void onUntrustedInstallationSourceDetected() {
-        threatDetected("untrustedInstallationSource");
+        threatDetected("onUnofficialStore");
     }
 
     @Override
     public void onHookDetected() {
-        threatDetected("hook");
+        threatDetected("onHooks");
     }
 
     @Override
     public void onDeviceBindingDetected() {
-        threatDetected("deviceBinding");
+        threatDetected("onDeviceBinding");
     }
 
     @Override
     public void onObfuscationIssuesDetected() {
-        threatDetected("obfuscationIssues");
+        threatDetected("onObfuscationIssues");
     }
 
     @Override
     public void onScreenshotDetected() {
-        threatDetected("screenshot");
+        threatDetected("onScreenshot");
     }
 
     @Override
     public void onScreenRecordingDetected() {
-        threatDetected("screenRecording");
+        threatDetected("onScreenRecording");
     }
 
     @Override
     public void onUnlockedDeviceDetected() {
-        threatDetected("unlockedDevice");
+        threatDetected("onPasscode");
     }
 
     @Override
     public void onHardwareBackedKeystoreNotAvailableDetected() {
-        threatDetected("hardwareBackedKeystoreNotAvailable");
+        threatDetected("onSecureHardwareNotAvailable");
     }
 
     @Override
     public void onDeveloperModeDetected() {
-        threatDetected("developerMode");
+        threatDetected("onDevMode");
     }
 
     @Override
     public void onADBEnabledDetected() {
-        threatDetected("adbEnabled");
+        threatDetected("onADBEnabled");
     }
 
     @Override
     public void onSystemVPNDetected() {
-        threatDetected("systemVPN");
+        threatDetected("onSystemVPN");
     }       
 }

@@ -179,59 +179,34 @@ void UFreeRASPPluginLibrary::SendThreatToUE(const FString& threatType) {
             {
                 // Convert threat type string to the correct ThreatType enum
                 UE_LOG(LogTemp, Warning, TEXT("Threat type: %s"), *threatType);
+
+                // Static map for threat type conversion - initialized once
+                static const TMap<FString, ThreatType> ThreatTypeMap = {
+                    {TEXT("onPrivilegedAccess"), ThreatType::OnPrivilegedAccess},
+                    {TEXT("onAppIntegrity"), ThreatType::OnAppIntegrity},
+                    {TEXT("onDebug"), ThreatType::OnDebug}, // iOS & Android
+                    {TEXT("onHooks"), ThreatType::OnHookDetected}, // runtime manipulation (ios) + Android
+                    {TEXT("onSimulator"), ThreatType::OnSimulator}, // iOS & Android
+                    {TEXT("onUnofficialStore"), ThreatType::OnUnofficialStore}, // iOS & Android
+                    {TEXT("onDeviceBinding"), ThreatType::OnDeviceBinding}, // device change (ios)
+                    {TEXT("onDeviceID"), ThreatType::OnDeviceID}, // device id (ios)
+                    {TEXT("onObfuscationIssues"), ThreatType::OnObfuscationIssues},
+                    {TEXT("onScreenshot"), ThreatType::OnScreenshot},
+                    {TEXT("onScreenRecording"), ThreatType::OnScreenRecording},
+                    {TEXT("onPasscode"), ThreatType::OnPasscode},
+                    {TEXT("onPasscodeChange"), ThreatType::OnPasscodeChange},
+                    {TEXT("onSecureHardwareNotAvailable,"), ThreatType::OnSecureHardwareNotAvailable},
+                    {TEXT("onDevMode"), ThreatType::OnDevMode},
+                    {TEXT("onADBEnabled"), ThreatType::OnADBEnabled},
+                    {TEXT("onSystemVPN"), ThreatType::OnSystemVPN},
+                };
+
                 ThreatType ThreatEnum = ThreatType::Unknown;
-                if (threatType == TEXT("root"))
-                    ThreatEnum = ThreatType::RootDetected;
-                else if (threatType == TEXT("jailbreak"))
-                    ThreatEnum = ThreatType::JailbreakDetected;
-                else if (threatType == TEXT("signature"))
-                    ThreatEnum = ThreatType::SignatureDetected;
-                else if (threatType == TEXT("runtimeManipulation"))
-                    ThreatEnum = ThreatType::RuntimeManipulationDetected;
-                else if (threatType == TEXT("passcode"))
-                    ThreatEnum = ThreatType::PasscodeDetected;
-                else if (threatType == TEXT("passcodeChange"))
-                    ThreatEnum = ThreatType::PasscodeChangeDetected;
-                else if (threatType == TEXT("tamper"))
-                    ThreatEnum = ThreatType::TamperDetected;
-                else if (threatType == TEXT("debugger"))
-                    ThreatEnum = ThreatType::DebuggerDetected;
-                else if (threatType == TEXT("emulator"))
-                    ThreatEnum = ThreatType::EmulatorDetected;
-                else if (threatType == TEXT("simulator"))
-                    ThreatEnum = ThreatType::EmulatorDetected;
-                else if (threatType == TEXT("missingSecureEnclave"))
-                    ThreatEnum = ThreatType::MissingSecureEnclaveDetected;
-                else if (threatType == TEXT("deviceChange"))
-                    ThreatEnum = ThreatType::DeviceChangeDetected;
-                else if (threatType == TEXT("deviceID"))
-                    ThreatEnum = ThreatType::DeviceIdDetected;
-                else if (threatType == TEXT("unofficialStore"))
-                    ThreatEnum = ThreatType::UofficialStoreDetected;
-                else if (threatType == TEXT("untrustedInstallationSource"))
-                    ThreatEnum = ThreatType::UntrustedInstallationSourceDetected;
-                else if (threatType == TEXT("hook"))
-                    ThreatEnum = ThreatType::HookDetected;
-                else if (threatType == TEXT("deviceBinding"))
-                    ThreatEnum = ThreatType::DeviceBindingDetected;
-                else if (threatType == TEXT("obfuscationIssues"))
-                    ThreatEnum = ThreatType::ObfuscationIssuesDetected;
-                else if (threatType == TEXT("screenshot"))
-                    ThreatEnum = ThreatType::ScreenshotDetected;
-                else if (threatType == TEXT("screenRecording"))
-                    ThreatEnum = ThreatType::ScreenRecordingDetected;
-                else if (threatType == TEXT("unlockedDevice"))
-                    ThreatEnum = ThreatType::UnlockedDeviceDetected;
-                else if (threatType == TEXT("hardwareBackedKeystoreNotAvailable"))
-                    ThreatEnum = ThreatType::HardwareBackedKeystoreNotAvailableDetected;
-                else if (threatType == TEXT("developerMode"))
-                    ThreatEnum = ThreatType::DeveloperModeDetected;
-                else if (threatType == TEXT("adbEnabled"))
-                    ThreatEnum = ThreatType::ADBEnabledDetected;
-                else if (threatType == TEXT("systemVPN"))
-                    ThreatEnum = ThreatType::SystemVPNDetected;
-                else if (threatType == TEXT("deviceChange"))
-                    ThreatEnum = ThreatType::DeviceChangeDetected;
+                if (const ThreatType* FoundThreat = ThreatTypeMap.Find(threatType))
+                {
+                    ThreatEnum = *FoundThreat;
+                }
+                
                 // Use AsyncTask to ensure this runs on game thread 
                 // this is important as Talsec uses background threads to do threat detection
                 AsyncTask(ENamedThreads::GameThread, [Library, ThreatEnum]()

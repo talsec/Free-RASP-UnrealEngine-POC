@@ -109,32 +109,6 @@ public:
      * It converts the string-based threat type from the native library into the corresponding ThreatType enum
      * and broadcasts the threat through the OnSecurityThreatDetected delegate on the game thread.
      * 
-     * The method handles the following threat type mappings:
-     * - "root" → RootDetected
-     * - "jailbreak" → JailbreakDetected
-     * - "signature" → SignatureDetected
-     * - "runtimeManipulation" → RuntimeManipulationDetected
-     * - "passcode" → PasscodeDetected
-     * - "passcodeChange" → PasscodeChangeDetected
-     * - "tamper" → TamperDetected
-     * - "debugger" → DebuggerDetected
-     * - "emulator" → EmulatorDetected
-     * - "simulator" → EmulatorDetected
-     * - "missingSecureEnclave" → MissingSecureEnclaveDetected
-     * - "deviceChange" → DeviceBindingDetected
-     * - "deviceID" → DeviceIdDetected
-     * - "unofficialStore" → UofficialStoreDetected
-     * - "untrustedInstallationSource" → UntrustedInstallationSourceDetected
-     * - "hook" → HookDetected
-     * - "deviceBinding" → DeviceBindingDetected
-     * - "obfuscationIssues" → ObfuscationIssuesDetected
-     * - "screenshot" → ScreenshotDetected
-     * - "screenRecording" → ScreenRecordingDetected
-     * - "unlockedDevice" → UnlockedDeviceDetected
-     * - "hardwareBackedKeystoreNotAvailable" → HardwareBackedKeystoreNotAvailableDetected
-     * - "developerMode" → DeveloperModeDetected
-     * - "adbEnabled" → ADBEnabledDetected
-     * - "systemVPN" → SystemVPNDetected
      * 
      * @param threatType The string identifier of the detected threat type from the native FreeRASP library.
      *                   This parameter is provided by the Talsec native code and should match one of the

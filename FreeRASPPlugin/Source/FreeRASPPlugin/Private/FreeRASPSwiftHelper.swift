@@ -37,33 +37,33 @@ extension SecurityThreatCenter: SecurityThreatHandler {
         // Handle each threat type individually
         switch securityThreat {
             case .signature:
-                message = "signature"
+                message = "onAppIntegrity"
             case .jailbreak:
-                message = "jailbreak"
+                message = "onPrivilegedAccess"
             case .debugger:
-                message = "debugger"
+                message = "onDebug"
             case .runtimeManipulation:
-                message = "runtimeManipulation"
+                message = "onHooks"
             case .passcode:
-                message = "passcode"
+                message = "onPasscode"
             case .passcodeChange:
-                message = "passcodeChange"
+                message = "onPasscodeChange"
             case .simulator:
-                message = "simulator"
+                message = "onSimulator"
             case .missingSecureEnclave:
-                message = "missingSecureEnclave"
+                message = "onSecureHardwareNotAvailable"
             case .deviceChange:
-                message = "deviceChange"
+                message = "onDeviceBinding"
             case .deviceID:
-                message = "deviceID"
+                message = "onDeviceID"
             case .unofficialStore:
-                message = "unofficialStore"
+                message = "onUnofficialStore"
             case .systemVPN:
-                message = "systemVPN"
+                message = "onSystemVPN"
             case .screenshot:
-                message = "screenshot"
+                message = "onScreenshot"
             case .screenRecording:
-                message = "screenRecording"
+                message = "onScreenRecording"
         }
 
         // Notify Unreal Engine
