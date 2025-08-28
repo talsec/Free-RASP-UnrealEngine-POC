@@ -101,48 +101,64 @@ void AYourGameMode::BeginPlay()
     }
 }
 
-void AYourGameMode::HandleSecurityThreat(ThreatType Threat)
+void AYourGameMode::HandleSecurityThreat(ThreatType ThreatType)
 {
-    switch (Threat)
-    {
-        case ThreatType::RootDetected:
-            UE_LOG(LogTemp, Warning, TEXT("Root detected!"));
-            // Handle root detection
+	UE_LOG(LogTemp, Warning, TEXT("Security threat detected: %d"), ThreatType);
+    switch (ThreatType) {
+        case ThreatType::OnPrivilegedAccess:
+            UE_LOG(LogTemp, Warning, TEXT("Privileged access threat detected"));
             break;
-            
-        case ThreatType::JailbreakDetected:
-            UE_LOG(LogTemp, Warning, TEXT("Jailbreak detected!"));
-            // Handle jailbreak detection
+        case ThreatType::OnAppIntegrity:
+            UE_LOG(LogTemp, Warning, TEXT("App integrity threat detected"));
             break;
-            
-        case ThreatType::EmulatorDetected:
-            UE_LOG(LogTemp, Warning, TEXT("Emulator detected!"));
-            // Handle emulator detection
+        case ThreatType::OnDebug:
+            UE_LOG(LogTemp, Warning, TEXT("Debug threat detected"));
             break;
-            
-        case ThreatType::DebuggerDetected:
-            UE_LOG(LogTemp, Warning, TEXT("Debugger detected!"));
-            // Handle debugger detection
+        case ThreatType::OnSimulator:
+            UE_LOG(LogTemp, Warning, TEXT("Simulator threat detected"));
             break;
-            
-        case ThreatType::TamperDetected:
-            UE_LOG(LogTemp, Warning, TEXT("App tampering detected!"));
-            // Handle tampering detection
+        case ThreatType::OnUnofficialStore:
+            UE_LOG(LogTemp, Warning, TEXT("Unofficial store threat detected"));
             break;
-            
-        case ThreatType::ScreenRecordingDetected:
-            UE_LOG(LogTemp, Warning, TEXT("Screen recording detected!"));
-            // Handle screen recording detection
+        case ThreatType::OnHookDetected:
+            UE_LOG(LogTemp, Warning, TEXT("Hook threat detected"));
             break;
-            
-        case ThreatType::SystemVPNDetected:
-            UE_LOG(LogTemp, Warning, TEXT("VPN detected!"));
-            // Handle VPN detection
+        case ThreatType::OnDeviceBinding:
+            UE_LOG(LogTemp, Warning, TEXT("Device binding threat detected"));
             break;
-            
-        default:
-            UE_LOG(LogTemp, Warning, TEXT("Unknown security threat detected!"));
+        case ThreatType::OnDeviceID:
+            UE_LOG(LogTemp, Warning, TEXT("Device ID threat detected"));
             break;
+        case ThreatType::OnObfuscationIssues:
+            UE_LOG(LogTemp, Warning, TEXT("Obfuscation issues threat detected"));
+            break;
+        case ThreatType::OnScreenshot:
+            UE_LOG(LogTemp, Warning, TEXT("Screenshot threat detected"));
+            break;
+        case ThreatType::OnScreenRecording:
+            UE_LOG(LogTemp, Warning, TEXT("Screen recording threat detected"));
+            break;
+        case ThreatType::OnPasscode:
+            UE_LOG(LogTemp, Warning, TEXT("Passcode threat detected"));
+            break;
+        case ThreatType::OnPasscodeChange:
+            UE_LOG(LogTemp, Warning, TEXT("Passcode change threat detected"));
+            break;
+        case ThreatType::OnSecureHardwareNotAvailable:
+            UE_LOG(LogTemp, Warning, TEXT("Secure hardware not available threat detected"));
+            break;
+        case ThreatType::OnDevMode:
+            UE_LOG(LogTemp, Warning, TEXT("Dev mode threat detected"));
+            break;
+        case ThreatType::OnADBEnabled:
+            UE_LOG(LogTemp, Warning, TEXT("ADB enabled threat detected"));
+            break;
+        case ThreatType::OnSystemVPN:
+            UE_LOG(LogTemp, Warning, TEXT("System VPN threat detected"));
+            break;
+        case ThreatType::Unknown:
+            UE_LOG(LogTemp, Warning, TEXT("Unknown threat detected"));
+            break;  
     }
 }
 ```
