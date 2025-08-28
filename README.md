@@ -41,34 +41,6 @@ FreeRASP is a runtime application self-protection solution that helps detect and
 2. **Enable the Plugin**: The plugin is enabled by default, but you can verify in the Unreal Editor under Edit > Plugins > Security
 3. **Rebuild the Project**: Close and reopen your project to ensure the plugin is properly loaded
 
-## Building Swift Components (iOS)
-
-For iOS builds, you need to compile the Swift helper library. Run the following commands from the plugin's root directory:
-
-```bash
-# Compile Swift code to object file
-xcrun -sdk iphoneos swiftc -target arm64-apple-ios15.0 \
-  -parse-as-library \
-  -emit-object \
-  -emit-objc-header -emit-objc-header-path FreeRASPPlugin-Swift.h \
-  -module-name FreeRASPPlugin \
-  -sdk $(xcrun --show-sdk-path --sdk iphoneos) \
-  -framework UIKit \
-  -F /path/to/your/project/Plugins/FreeRASPPlugin/Thirdparty/iOS/TalsecRuntime.xcframework/ios-arm64 \
-  -o FreeRASPSwiftHelper.o \
-  FreeRASPSwiftHelper.swift
-```
-Move the generated `FreeRASPPlugin-Swift.h` to the public directory (i.e Source/FreeRASPPlugin/public) 
-
-```bash
-# Create static library
-ar rcs libFreeRASPSwiftHelper.a FreeRASPSwiftHelper.o
-```
-
-Move the generated `libFreeRASPSwiftHelper.a` to ThirdParty/iOS/ directory
-
-**Note**: Replace `/path/to/your/project/` with the actual path to your Unreal project.
-
 ## Configuration
 
 ### Android Configuration
