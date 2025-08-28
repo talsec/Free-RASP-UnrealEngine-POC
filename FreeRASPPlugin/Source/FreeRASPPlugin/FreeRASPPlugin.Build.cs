@@ -54,8 +54,7 @@ public class FreeRASPPlugin : ModuleRules
                 )
 			);
 
-            // Add iOS frameworks if needed
-            PublicFrameworks.Add("UIKit");
+            // Add iOS frameworks
             PublicFrameworks.Add("Foundation");
 
             // string PluginPath = Utils.MakePathRelativeTo(ModuleDirectory, Target.RelativeEnginePath);

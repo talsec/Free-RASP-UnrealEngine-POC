@@ -1,5 +1,4 @@
-// SimpleSwiftHelper.swift
-import UIKit
+// FreeRASPSwiftHelper.swift
 import Foundation
 import os.log
 

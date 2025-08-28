@@ -56,7 +56,7 @@ The plugin automatically configures the following for Android:
 The plugin automatically configures the following for iOS:
 
 - **Frameworks**: Links TalsecRuntime.xcframework
-- **System Frameworks**: Adds UIKit and Foundation frameworks
+- **System Frameworks**: Add Foundation framework
 - **Build Settings**: Configures proper linking and embedding
 
 ## Usage

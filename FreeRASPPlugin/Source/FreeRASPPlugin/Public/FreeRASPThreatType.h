@@ -24,9 +24,5 @@ enum ThreatType
     OnDevMode,
     OnADBEnabled,
     OnSystemVPN, 
-    // UnlockedDeviceDetected,
-
-    // DeviceIdDetected, 
-    // DeviceChangeDetected, 
     Unknown,
 };
