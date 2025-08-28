@@ -63,6 +63,8 @@ extension SecurityThreatCenter: SecurityThreatHandler {
                 message = "onScreenshot"
             case .screenRecording:
                 message = "onScreenRecording"
+            default:
+                message = "unknown"
         }
 
         // Notify Unreal Engine
