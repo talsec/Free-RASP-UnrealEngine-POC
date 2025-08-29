@@ -23,7 +23,7 @@ FreeRASP is a runtime application self-protection solution that helps detect and
 ## Supported Platforms
 
 - **iOS**: iOS 15.0+ (arm64)
-- **Android**: API level 21+ (arm64)
+- **Android**: API level 23+ (arm64)
 
 ## Installation
 
