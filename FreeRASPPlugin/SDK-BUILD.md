@@ -1,6 +1,9 @@
+Versioning
+==========
+The version for this plugin is kept inside `FreeRASPPlugin.uplugin` file. Make sure to update this before making a release. 
+
 Build (iOS)
 ===========
-
 Building the iOS plugin involves the following steps
 1. Compile swift code (FreeRASPSwiftHelper.swift)
 2. Create an archive of the compiled object in #1
