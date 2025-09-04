@@ -188,7 +188,7 @@ void UFreeRASPPluginLibrary::SendThreatToUE(const FString& threatType) {
                     {TEXT("onScreenshot"), ThreatType::OnScreenshot},
                     {TEXT("onScreenRecording"), ThreatType::OnScreenRecording},
                     {TEXT("onPasscode"), ThreatType::OnPasscode}, // onPasscodeChange is removed as its no longer used
-                    {TEXT("onSecureHardwareNotAvailable,"), ThreatType::OnSecureHardwareNotAvailable},
+                    {TEXT("onSecureHardwareNotAvailable"), ThreatType::OnSecureHardwareNotAvailable},
                     {TEXT("onDevMode"), ThreatType::OnDevMode},
                     {TEXT("onADBEnabled"), ThreatType::OnADBEnabled},
                     {TEXT("onSystemVPN"), ThreatType::OnSystemVPN},
