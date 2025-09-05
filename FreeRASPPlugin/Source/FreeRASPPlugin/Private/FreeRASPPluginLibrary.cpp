@@ -102,28 +102,8 @@ void UFreeRASPPluginLibrary::InitializeTalsec(const TArray<FString>& appBundleId
         {
             return;
         }
-
-        // Get the Android application context required by FreeRASP
-        jobject ApplicationContext = nullptr;
         
-        // Retrieve context from the current Android activity
-        if (FAndroidApplication::GetGameActivityThis())
-        {
-            // Get the activity class to access its methods
-            jclass ActivityClass = Env->GetObjectClass(FAndroidApplication::GetGameActivityThis());
-            if (ActivityClass)
-            {
-                // Get the getApplicationContext method to obtain the application context
-                jmethodID GetContextMethod = Env->GetMethodID(ActivityClass, "getApplicationContext", "()Landroid/content/Context;");
-                if (GetContextMethod)
-                {
-                    ApplicationContext = Env->CallObjectMethod(FAndroidApplication::GetGameActivityThis(), GetContextMethod);
-                }
-                Env->DeleteLocalRef(ActivityClass);
-            }
-        }
-
-        if (ApplicationContext)
+        if (GGameActivityThis)
         {
             // Find the FreeRASP Controller Java class
             jclass ControllerClass = FAndroidApplication::FindJavaClass("com/talsec/free/rasp/Controller");
@@ -145,7 +125,7 @@ void UFreeRASPPluginLibrary::InitializeTalsec(const TArray<FString>& appBundleId
                     jobjectArray SupportedStoresArray = FStringArrayToJObjectArray(Env, SupportedAlternativeStores);
 
                     // Call the Java FreeRASP initialization method with all parameters
-                    Env->CallVoidMethod(ControllerInstance, InitializeTalsecMethod, ApplicationContext, PackageNameJString, SigningCertArray, SupportedStoresArray, WatcherEmailAddressJString, IsProdJBoolean);
+                    Env->CallVoidMethod(ControllerInstance, InitializeTalsecMethod, GGameActivityThis, PackageNameJString, SigningCertArray, SupportedStoresArray, WatcherEmailAddressJString, IsProdJBoolean);
 
                     // Clean up local references
                     Env->DeleteLocalRef(PackageNameJString);

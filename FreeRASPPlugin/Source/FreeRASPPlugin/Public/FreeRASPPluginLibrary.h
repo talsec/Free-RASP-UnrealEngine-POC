@@ -11,6 +11,13 @@
 #include "Android/AndroidApplication.h"
 #include "Android/AndroidJNI.h"
 #include "Android/AndroidJava.h"
+
+// unreal will define this for us
+// we are going to use this to get the application context
+// previousely we used to get it as follows
+// FAndroidApplication::GetGameActivityThis()
+// and then calling getApplicationContext() using jni apis
+extern jobject GGameActivityThis;
 #endif
 
 #include "FreeRASPPluginLibrary.generated.h"
