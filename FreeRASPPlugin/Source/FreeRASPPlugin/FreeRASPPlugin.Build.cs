@@ -43,14 +43,14 @@ public class FreeRASPPlugin : ModuleRules
         if (Target.Platform == UnrealTargetPlatform.IOS)
         {
             // Add your compiled Swift object/library
-            string RASPSwiftHelperLib = System.IO.Path.Combine(ModuleDirectory, "../../ThirdParty/iOS/libFreeRASPSwiftHelper.a");
+            string RASPSwiftHelperLib = System.IO.Path.Combine(ModuleDirectory, "../../Bridge/iOS/FreeRASPSwiftBridge.a");
             PublicAdditionalLibraries.Add(RASPSwiftHelperLib);
 
             // Add the framework
             PublicAdditionalFrameworks.Add(
                 new Framework(
                     "TalsecRuntime",
-                    "../../ThirdParty/iOS/TalsecRuntime.xcframework",null, true
+                    "../../Bridge/iOS/TalsecRuntime.xcframework",null, true
                 )
 			);
 

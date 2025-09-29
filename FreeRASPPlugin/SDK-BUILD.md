@@ -18,15 +18,15 @@ Compile using the command below
     -module-name FreeRASPPlugin \
     -sdk $(xcrun --show-sdk-path --sdk iphoneos) \
     -framework UIKit \
-    -F <location_of_unreal_project>/Plugins/FreeRASPPlugin/Thirdparty/iOS/TalsecRuntime.xcframework/ios-arm64 \
+    -F <location_of_unreal_project>/Plugins/FreeRASPPlugin/Bridge/iOS/TalsecRuntime.xcframework/ios-arm64 \
     -o FreeRASPSwiftHelper.o \
     FreeRASPSwiftHelper.swift
 
 
 Create archive using $ar
 
-    ar rcs libFreeRASPSwiftHelper.a FreeRASPSwiftHelper.o
+    ar rcs FreeRASPSwiftBridge.a FreeRASPSwiftHelper.o
 
-Copy libFreeRASPSwiftHelper.a to Plugins/FreeRASPPlugin/Thirdparty/iOS/ folder (delete the object file afterwards)
+Copy FreeRASPSwiftBridge.a to Plugins/FreeRASPPlugin/Bridge/iOS/ folder (delete the object file afterwards)
 
 Copy FreeRASPPlugin-Swift.h to Plugins/FreeRASPPlugin/source/FreeRASPPlugin/public/

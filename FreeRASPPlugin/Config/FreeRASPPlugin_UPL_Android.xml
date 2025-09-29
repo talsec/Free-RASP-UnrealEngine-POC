@@ -5,7 +5,7 @@
             android {
                 sourceSets {
                     main {
-                        java.srcDirs += ['$S(PluginDir)/../ThirdParty/Android']
+                        java.srcDirs += ['$S(PluginDir)/../Bridge/Android']
                     }
                 }
             }
@@ -23,7 +23,7 @@
     </buildGradleAdditions>
 
     <resourceCopies>
-        <copyDir src="$S(PluginDir)/../ThirdParty/Android/" 
+        <copyDir src="$S(PluginDir)/../Bridge/Android/" 
                  dst="$S(BuildDir)/src/main/" />
     </resourceCopies>
 

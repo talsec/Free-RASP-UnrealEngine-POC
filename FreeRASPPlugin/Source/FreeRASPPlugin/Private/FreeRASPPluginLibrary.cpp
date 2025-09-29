@@ -55,7 +55,6 @@ void UFreeRASPPluginLibrary::Initialize(FSubsystemCollectionBase& Collection)
         {
             // Create an instance of the controller class
             ControllerInstance = Env->NewObject(ControllerClass, Constructor);
-            UE_LOG(LogTemp, Warning, TEXT("ControllerInstance created"));
         }
     #endif
 }
