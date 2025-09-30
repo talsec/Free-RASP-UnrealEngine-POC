@@ -1,13 +1,13 @@
 {
     "FileVersion": 3,
-    "Version": 2,
-    "VersionName": "1.1",
+    "Version": 1,
+    "VersionName": "1.0",
     "FriendlyName": "FreeRASP",
     "Description": "FreeRASP plugin from Talsec",
-    "Category": "Android",
+    "Category": "Security",
     "CreatedBy": "Talsec",
-    "CreatedByURL": "",
-    "DocsURL": "",
+    "CreatedByURL": "https://www.talsec.app/",
+    "DocsURL": "https://github.com/talsec/Free-RASP-UnrealEngine-POC/blob/master/README.md",
     "MarketplaceURL": "",
     "SupportURL": "",
     "EnabledByDefault": true,
@@ -21,6 +21,7 @@
             "Type": "Runtime",
             "LoadingPhase": "Default",
             "WhitelistPlatforms": [
+                "IOS",
                 "Android"
             ]
         }

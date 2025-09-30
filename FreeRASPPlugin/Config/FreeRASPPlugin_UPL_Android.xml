@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root xmlns:android="http://schemas.android.com/apk/res/android">
+    <buildGradleAdditions>
+        <insert>
+            android {
+                sourceSets {
+                    main {
+                        java.srcDirs += ['$S(PluginDir)/../Bridge/Android']
+                    }
+                }
+            }
+            dependencies {
+                implementation 'com.aheaditec.talsec.security:TalsecSecurity-Community:15.1.0'
+            }
+
+            repositories {
+                google()
+                mavenCentral()
+                maven { url = uri("https://jitpack.io") }
+                maven { url = uri("https://europe-west3-maven.pkg.dev/talsec-artifact-repository/freerasp") }
+            }
+        </insert>
+    </buildGradleAdditions>
+
+    <resourceCopies>
+        <copyDir src="$S(PluginDir)/../Bridge/Android/" 
+                 dst="$S(BuildDir)/src/main/" />
+    </resourceCopies>
+
+    <!-- Add permissions -->
+    <androidManifestUpdates>
+        <addPermission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    </androidManifestUpdates>
+</root>

@@ -2,45 +2,29 @@
 
 #include "CoreMinimal.h"
 #include "Engine/Engine.h"
-#include "Kismet/BlueprintFunctionLibrary.h"
+#include "Modules/ModuleManager.h"
+#include "FreeRASPThreatType.h"
+
+#include "FreeRASPPlugin-Swift.h"
 
 #if PLATFORM_ANDROID
 #include "Android/AndroidApplication.h"
 #include "Android/AndroidJNI.h"
+#include "Android/AndroidJava.h"
+
+// unreal will define this for us
+// we are going to use this to get the application context
+// previousely we used to get it as follows
+// FAndroidApplication::GetGameActivityThis()
+// and then calling getApplicationContext() using jni apis
+extern jobject GGameActivityThis;
 #endif
 
 #include "FreeRASPPluginLibrary.generated.h"
 
-UENUM(BlueprintType)
-enum class EThreatType : uint8
-{
-    RootDetected,
-    TamperDetected,
-    DebuggerDetected,
-    EmulatorDetected,
-    UntrustedInstallationSourceDetected,
-    HookDetected,
-    DeviceBindingDetected,
-    ObfuscationIssuesDetected,
-    ScreenshotDetected,
-    ScreenRecordingDetected,
-    UnlockedDeviceDetected,
-    HardwareBackedKeystoreNotAvailableDetected,
-    DeveloperModeDetected,
-    ADBEnabledDetected,
-    SystemVPNDetected,
-    Unknown,
-};
+// Multicast delegate that can have multiple subscribers
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSecurityThreatDetected, ThreatType, Threat);
 
-/**
- * Delegate for handling threat detection callbacks from the FreeRASP library.
- * 
- * This delegate is called when the Android FreeRASP library detects a security threat.
- * It provides an enum value describing the nature of the detected threat.
- * 
- * @param ThreatType An enum value indicating the type of security threat detected
- */
-DECLARE_DYNAMIC_DELEGATE_OneParam(FOnAndroidThreatDetectedCallback, EThreatType, ThreatType);
 
 // Forward declaration for JNI function
 #if PLATFORM_ANDROID
@@ -57,72 +41,100 @@ public:
     virtual void Initialize(FSubsystemCollectionBase& Collection) override;
     virtual void Deinitialize() override;
 
-    
     /**
-     * Initializes the FreeRASP library with security configuration parameters.
+     * Initializes the Talsec FreeRASP security framework for mobile applications.
      * 
-     * This method initializes the Android FreeRASP library
-     * with the specified security parameters. It sets up threat detection capabilities including
-     * root detection, emulator detection, debugger detection, and other security checks.
+     * This method sets up the FreeRASP security monitoring system that detects various security threats
+     * such as jailbreak/root detection, debugger attachment, emulator detection, tampering detection,
+     * and other runtime security violations. The method adapts its behavior based on the target platform.
      * 
-     * @param PackageName The package name of your Android application (e.g., "com.yourcompany.yourapp")
-     * @param SigningCertificateBase64Hash Array of base64-encoded SHA-256 hashes of your app's signing certificates.
-     *                                     This is used to verify the app's authenticity and detect tampering.
-     * @param SupportedAlternativeStores Array of supported alternative app store names (e.g., "Google Play Store").
-     *                                   This helps FreeRASP distinguish between legitimate and unauthorized app sources.
-     * @param WatcherEmailAddress Email address where security alerts and threat notifications will be sent. 
-     * @param IsProd Boolean flag indicating whether the app is running in production mode (true) or development mode (false).
-     *               In development mode, some security checks may be relaxed for debugging purposes.
+     * @param appBundleIds Array of application bundle identifiers that are allowed to run this app (iOS).
+     *                     These are the bundle IDs of apps that are considered trusted.
+     *                     For Android, this parameter is not used and can be empty.
+     * @param appTeamId The Apple Developer Team ID associated with your app's provisioning profile (iOS).
+     *                  This is used for signature verification and app authenticity checks.
+     *                  For Android, this parameter is not used and can be empty.
+     * @param PackageName The package name of your Android application (Android only).
+     *                   This should match the package name in your AndroidManifest.xml.
+     *                   For iOS, this parameter is not used and can be empty.
+     * @param SigningCertificateBase64Hash Array of base64-encoded SHA-256 hashes of your app's signing certificates (Android).
+     *                                     These are used to verify the authenticity of your app.
+     *                                     For iOS, this parameter is not used and can be empty.
+     * @param SupportedAlternativeStores Array of supported alternative app store package names (Android).
+     *                                   This allows your app to run on alternative app stores while maintaining security.
+     *                                   For iOS, this parameter is not used and can be empty.
+     * @param watcherMailAddress Email address where security threat notifications will be sent.
+     *                           This is used by Talsec for monitoring and alerting purposes.
+     * @param isProd Boolean flag indicating whether the app is running in production mode (true)
+     *               or development/debug mode (false). This affects the sensitivity of threat detection.
      * 
-     * @return true if initialization was successful, false otherwise.
+     * @note This method should be called early in the application lifecycle, typically during
+     *       app initialization or in the GameInstance's Initialize method.
+     * @note Platform-specific behavior:
+     *       - iOS: Uses appBundleIds and appTeamId for signature verification
+     *       - Android: Uses PackageName, SigningCertificateBase64Hash, and SupportedAlternativeStores
+     *       - Other platforms: Method will have no effect
+     * @note After initialization, security threats will be broadcast through the OnSecurityThreatDetected
+     *       delegate, which can be bound to in Blueprint or C++ to handle detected threats.
      * 
-     * @note This method is only functional on Android platforms. On other platforms, it will return false.
-     * 
-     * @note The method requires a valid Android application context and JNI environment to function properly.
-     *       Make sure the Android application is properly initialized before calling this method.
-     * 
-     * @note This method should be called after the FreeRASPPluginLibrary subsystem has been initialized
-     *       (typically in your GameInstance or early in the application lifecycle).
-     * 
-     * @warning The signing certificate hashes must match exactly with your app's actual signing certificates.
-     *          Incorrect hashes will cause the security checks to fail and may trigger false threat detections.
-     * 
+     * @see OnSecurityThreatDetected
+     * @see ThreatType
      */
-    UFUNCTION(BlueprintCallable, Category = "FreeRASPPlugin")
-    bool InitializeTalsec(const FString& PackageName, 
-        const TArray<FString>& SigningCertificateBase64Hash, 
-        const TArray<FString>& SupportedAlternativeStores, 
-        const FString& WatcherEmailAddress, bool IsProd);
+    void InitializeTalsec(const TArray<FString>& appBundleIds, const FString& appTeamId, 
+        const FString& PackageName, const TArray<FString>& SigningCertificateBase64Hash, const TArray<FString>& SupportedAlternativeStores, 
+        const FString& watcherMailAddress, bool isProd);
 
     /**
-     * Sets the callback function that will be executed when a threat is detected by the FreeRASP library.
+     * Broadcasts a security threat event to the OnSecurityThreatDetected delegate.
      * 
-     * This method allows you to register a callback function that will be called whenever the Android
-     * FreeRASP library detects a security threat. The callback receives a message string describing
-     * the detected threat.
+     * This function is used to notify other parts of the application about detected security threats.
+     * It should be called when a security threat is detected, and the delegate will be triggered
+     * to notify any listeners.
      * 
-     * @param Callback The delegate function to be called when a threat is detected. The function should
-     *                 accept a single FString parameter containing the threat message.
+     * @param Threat The type of security threat that was detected.
      * 
-     * @note This method is only functional on Android platforms. On other platforms, the callback
-     *       will be set but never triggered since FreeRASP only operates on Android.
-     * 
-     * @note The callback is stored as a static delegate, so only one callback can be active at a time.
-     *       Calling this method multiple times will replace the previous callback.
-     * 
+     * @see OnSecurityThreatDetected
+     * @see ThreatType
      */
-    UFUNCTION(BlueprintCallable, Category = "FreeRASPPlugin")
-    void SetOnAndroidThreatDetectedCallback(FOnAndroidThreatDetectedCallback Callback);
-    
-    // Static callback function that Java/JNI can call
-    static void OnThreatDetected(EThreatType ThreatType);
+     UFUNCTION()
+     void BroadcastSecurityThreat(const ThreatType& Threat);
 
-    // Helper function to convert string to enum
-    static EThreatType StringToThreatType(FString Message);
+    /**
+     * The delegate that others can bind to
+     * 
+     * This delegate is used to notify other parts of the application about detected security threats.
+     * It is triggered when a security threat is detected, and the delegate will be triggered
+     * to notify any listeners.
+     */
+    UPROPERTY()
+    FOnSecurityThreatDetected OnSecurityThreatDetected;
 
-private:
-    // Static delegate instance
-    static FOnAndroidThreatDetectedCallback OnAndroidThreatDetectedCallback;
+    /**
+     * Sends a security threat notification from native code to Unreal Engine.
+     * 
+     * This method is called by the native FreeRASP library (Talsec) when a security threat is detected.
+     * It converts the string-based threat type from the native library into the corresponding ThreatType enum
+     * and broadcasts the threat through the OnSecurityThreatDetected delegate on the game thread.
+     * 
+     * 
+     * @param threatType The string identifier of the detected threat type from the native FreeRASP library.
+     *                   This parameter is provided by the Talsec native code and should match one of the
+     *                   supported threat type strings listed above.
+     * 
+     * @note This method is designed to be called from native code (JNI on Android, native iOS code) and
+     *       should not be called directly from Unreal Engine code. The native FreeRASP library automatically
+     *       calls this method when threats are detected.
+     * @note The method ensures thread safety by using AsyncTask to execute the threat broadcast on the
+     *       game thread, as the native FreeRASP library operates on background threads.
+     * @note If the threat type string is not recognized, the method will default to ThreatType::Unknown.
+     * @note The method requires a valid game instance and world context to function properly.
+     * 
+     * @see OnSecurityThreatDetected
+     * @see ThreatType
+     * @see BroadcastSecurityThreat
+     */
+    UFUNCTION()
+    static void SendThreatToUE(const FString& threatType);
 
 private:
 #if PLATFORM_ANDROID

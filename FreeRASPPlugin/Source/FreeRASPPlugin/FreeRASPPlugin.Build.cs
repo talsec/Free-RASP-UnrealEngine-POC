@@ -10,7 +10,7 @@ public class FreeRASPPlugin : ModuleRules
             new string[] {
             }
         );
-        
+
         PrivateIncludePaths.AddRange(
             new string[] {
             }
@@ -32,12 +32,33 @@ public class FreeRASPPlugin : ModuleRules
                 "SlateCore"
             }
         );
-        
+
         if (Target.Platform == UnrealTargetPlatform.Android)
         {
-            PrivateDependencyModuleNames.AddRange(new string[] { "Launch" });
-            string PluginPath = Utils.MakePathRelativeTo(ModuleDirectory, Target.RelativeEnginePath);
-            AdditionalPropertiesForReceipt.Add("AndroidPlugin", System.IO.Path.Combine(PluginPath, "FreeRASPPlugin_UPL.xml"));
+            // string PluginPath = Utils.MakePathRelativeTo(ModuleDirectory, Target.RelativeEnginePath);
+            PublicDependencyModuleNames.AddRange(new string[] { "Launch" });
+            AdditionalPropertiesForReceipt.Add("AndroidPlugin", System.IO.Path.Combine(ModuleDirectory, "../../Config/FreeRASPPlugin_UPL_Android.xml"));
+        }
+
+        if (Target.Platform == UnrealTargetPlatform.IOS)
+        {
+            // Add your compiled Swift object/library
+            string RASPSwiftHelperLib = System.IO.Path.Combine(ModuleDirectory, "../../Bridge/iOS/FreeRASPSwiftBridge.a");
+            PublicAdditionalLibraries.Add(RASPSwiftHelperLib);
+
+            // Add the framework
+            PublicAdditionalFrameworks.Add(
+                new Framework(
+                    "TalsecRuntime",
+                    "../../Bridge/iOS/TalsecRuntime.xcframework",null, true
+                )
+			);
+
+            // Add iOS frameworks
+            PublicFrameworks.Add("Foundation");
+
+            // string PluginPath = Utils.MakePathRelativeTo(ModuleDirectory, Target.RelativeEnginePath);
+            AdditionalPropertiesForReceipt.Add("IOSPlugin", System.IO.Path.Combine(ModuleDirectory, "../../Config/FreeRASPPlugin_UPL_iOS.xml"));
         }
     }
 }
