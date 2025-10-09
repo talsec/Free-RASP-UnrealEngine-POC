@@ -1,164 +1,76 @@
+
+
+<h1>
+<img src="https://raw.githubusercontent.com/talsec/Free-RASP-Community/master/visuals/freeRASP.png" alt="RASP for Unreal Engine" width=100%>
+</h1>
+
+![GitHub Repo stars](https://img.shields.io/github/stars/talsec/Free-RASP-Community?color=green) ![GitHub](https://img.shields.io/github/license/talsec/Free-RASP-Community) ![GitHub last commit](https://img.shields.io/github/last-commit/talsec/Free-RASP-UnrealEngine-POC) ![Publisher](https://img.shields.io/pub/publisher/freerasp) [![42matters](https://42matters.com/badges/sdk-installations/talsec)](https://42matters.com/sdks/android/talsec)
+
+[<img src="https://assets.42matters.com/badges/2024/04/rising-star.svg?m=04" width="100"/>](https://42matters.com/sdks/android/talsec)
+
+
 # FreeRASP Plugin for Unreal Engine
 
-A comprehensive security plugin for Unreal Engine that integrates Talsec's FreeRASP (Runtime Application Self-Protection) solution to protect your mobile applications against various security threats.
+freeRASP SDK is RASP for Unreal Engine providing a mobile in-app protection and security monitoring. It aims to cover the main aspects of Runtime App Self Protection and application shielding.
 
-## Overview
+:loudspeaker: [The official documentation has been moved to a new location. You can now find it here](https://docs.talsec.app/docs-and-articles-portal?utm_source=github). :loudspeaker:
 
-FreeRASP is a runtime application self-protection solution that helps detect and prevent:
-- **Root/Jailbreak Detection**: Identifies if the device is rooted (Android) or jailbroken (iOS)
-- **Emulator Detection**: Detects if the app is running in an emulator or simulator
-- **Debugger Detection**: Identifies if the app is being debugged
-- **Tampering Detection**: Detects if the app has been modified or tampered with
-- **Screen Recording Detection**: Identifies if the screen is being recorded
-- **VPN Detection**: Detects if a VPN is being used
+# Overview
 
-## Features
+The freeRASP is available for Flutter, Cordova, Capacitor, React Native, Android, Unity, Unreal Engine and iOS developers. We encourage community contributions, investigations of attack cases, joint data research, and other activities aiming to make better app security and app safety for end-users.
 
-- **Cross-Platform Support**: Works on both iOS and Android
-- **Easy Integration**: Simple plugin-based integration with Unreal Engine
-- **Real-time Protection**: Continuous monitoring during app runtime
-- **Configurable**: Customizable detection settings and callbacks
-- **Performance Optimized**: Minimal impact on app performance
+freeRASP SDK is designed to combat
 
-## Supported Platforms
+* Reverse engineering attempts
+* Re-publishing or tampering with the apps
+* Running application in a compromised OS environment
+* Malware, fraudsters, and cybercriminal activities
 
-- **iOS**: iOS 15.0+ 
-- **Android**: API level 23+
+Key features are the detection and prevention of
 
-## Installation
+* Root/Jailbreak (e.g., su, Magisk, unc0ver, check1rain, Dopamine)
+* Hooking framework (e.g., Frida, Shadow)
+* Untrusted installation method
+* App/Device (un)binding
 
-### Prerequisites
+Additional freeRASP features include low latency, easy integration and a weekly [Security Report](https://docs.talsec.app/freerasp/security-report?utm_source=github) containing detailed information about detected incidents and potential threats, summarizing the state of your app security.
 
-- Unreal Engine 5.x
-- Xcode (for iOS development)
-- Android Studio (for Android development)
-- iOS 15.0+ SDK
-- Android API level 21+
+The commercial version provides a top-notch protection level, extra features, support and maintenance. One of the most valued commercial features is AppiCrypt® - App Integrity Cryptogram.
 
-### Setup Instructions
+It allows easy to implement API protection and App Integrity verification on the backend to prevent API abuse:
 
-1. **Copy the Plugin**: Place the `FreeRASPPlugin` folder in your project's `Plugins/` directory
-2. **Enable the Plugin**: The plugin is enabled by default, but you can verify in the Unreal Editor under Edit > Plugins > Security
-3. **Rebuild the Project**: Close and reopen your project to ensure the plugin is properly loaded
+* Bruteforce attacks
+* Botnets
+* Session-hijacking
+* DDoS
 
-## Configuration
+It is a unified solution that works across all mobile platforms without dependency on external web services (i.e., without extra latency, an additional point of failure, and maintenance costs).
 
-### Android Configuration
+Learn more about commercial features at [https://talsec.app](https://talsec.app?utm_source=github).
 
-The plugin automatically configures the following for Android:
+Learn more about freemium freeRASP features at [GitHub main repository](https://github.com/talsec/Free-RASP-Community).
 
-- **Dependencies**: Adds TalsecSecurity-Community library (version 15.1.0)
-- **Permissions**: Automatically adds required network state permission
-- **Build Configuration**: Integrates with Gradle build system
+# :book: Discover the Official freeRASP Documentation
+Visit the [GitBook page](https://docs.talsec.app/freerasp?utm_source=github) for comprehensive and up-to-date guides, tutorials, and technical documentation specifically for freeRASP. It serves as your go-to resource, offering everything from basic instructions to advanced tips and tricks to help you get the most out of the project.
 
-### iOS Configuration
+:loudspeaker: [The official documentation has been moved to a new location. You can now find it here](https://docs.talsec.app/docs-and-articles-portal?utm_source=github). :loudspeaker:
 
-The plugin automatically configures the following for iOS:
+## :link: Integration Guide
+For integrating freeRASP on the Unreal Engine platform, be sure to follow all the steps in the [Integration Guide](https://docs.talsec.app/freerasp/integration?utm_source=github). This guide provides detailed instructions to help you achieve a smooth and efficient integration.
 
-- **Frameworks**: Links TalsecRuntime.xcframework
-- **System Frameworks**: Add Foundation framework
-- **Build Settings**: Configures proper linking and embedding
+Be sure to bookmark it and stay informed! :books: :sparkles:.
 
-## Usage
+# :rocket: What's New and Changelog
+Stay informed and make the most of freeRASP by checking out [What's New and Changelog](https://docs.talsec.app/freerasp/whats-new-and-changelog?utm_source=github)! Here, you’ll discover the latest features, enhancements, and bug fixes we’ve implemented to improve your experience across all platforms, including Android, iOS, Flutter, React Native, Capacitor, Unity, Unreal Engine and Cordova.
 
-### Basic Integration
+Don’t miss out on any updates and explore the changelog to see how we’re continually making freeRASP better for you!
 
-1. **Include the Plugin**: The plugin is automatically included when enabled
-2. **Initialize FreeRASP**: Call the initialization function in your game's startup code
-3. **Handle Callbacks**: Implement callback functions to respond to security events
+# :sparkles: Enhancements
 
-### Example Implementation
+If you have any ideas for improvements, feel free to [raise an issue](https://github.com/talsec/Free-RASP-UnrealEngine-POC/issues) and mark it with an **enhancement** label. We track these enhancements using [GitHub Projects](https://docs.github.com/en/issues/planning-and-tracking-with-projects/learning-about-projects/about-projects) to keep tasks organized and connected to relevant issues or pull requests.
 
-```cpp
-// In your game's initialization code
-#include "FreeRASPPluginLibrary.h"
-#include "FreeRASPThreatType.h"
+You can check out the project board [here](https://github.com/orgs/talsec/projects/2).
 
-void AYourGameMode::BeginPlay()
-{
-    Super::BeginPlay();
-    
-    // Get the FreeRASP plugin library instance
-    UFreeRASPPluginLibrary* FreeRASPLib = GetGameInstance()->GetSubsystem<UFreeRASPPluginLibrary>();
-    
-    if (FreeRASPLib)
-    {
-        // Bind to security threat events
-        FreeRASPLib->OnSecurityThreatDetected.AddDynamic(this, &AYourGameMode::HandleSecurityThreat);
-        
-        // Initialize FreeRASP with your configuration
-        TArray<FString> AppBundleIds; // iOS: Add your app bundle IDs
-        FString AppTeamId = TEXT(""); // iOS: Add your Apple Developer Team ID
-        FString PackageName = TEXT(""); // Android: Add your package name
-        TArray<FString> SigningCertificates; // Android: Add your signing certificate hashes
-        TArray<FString> AlternativeStores; // Android: Add alternative store package names
-        FString WatcherEmail = TEXT("your-email@example.com"); // Add your email for notifications
-        bool IsProduction = false; // Set to true for production builds
-        
-        FreeRASPLib->InitializeTalsec(AppBundleIds, AppTeamId, PackageName, 
-                                     SigningCertificates, AlternativeStores, 
-                                     WatcherEmail, IsProduction);
-    }
-}
+# :page_facing_up: License
 
-void AYourGameMode::HandleSecurityThreat(ThreatType ThreatType)
-{
-	UE_LOG(LogTemp, Warning, TEXT("Security threat detected: %d"), ThreatType);
-    switch (ThreatType) {
-        case ThreatType::OnPrivilegedAccess:
-            UE_LOG(LogTemp, Warning, TEXT("Privileged access threat detected"));
-            break;
-        case ThreatType::OnAppIntegrity:
-            UE_LOG(LogTemp, Warning, TEXT("App integrity threat detected"));
-            break;
-        case ThreatType::OnDebug:
-            UE_LOG(LogTemp, Warning, TEXT("Debug threat detected"));
-            break;
-        case ThreatType::OnSimulator:
-            UE_LOG(LogTemp, Warning, TEXT("Simulator threat detected"));
-            break;
-        case ThreatType::OnUnofficialStore:
-            UE_LOG(LogTemp, Warning, TEXT("Unofficial store threat detected"));
-            break;
-        case ThreatType::OnHookDetected:
-            UE_LOG(LogTemp, Warning, TEXT("Hook threat detected"));
-            break;
-        case ThreatType::OnDeviceBinding:
-            UE_LOG(LogTemp, Warning, TEXT("Device binding threat detected"));
-            break;
-        case ThreatType::OnDeviceID:
-            UE_LOG(LogTemp, Warning, TEXT("Device ID threat detected"));
-            break;
-        case ThreatType::OnObfuscationIssues:
-            UE_LOG(LogTemp, Warning, TEXT("Obfuscation issues threat detected"));
-            break;
-        case ThreatType::OnScreenshot:
-            UE_LOG(LogTemp, Warning, TEXT("Screenshot threat detected"));
-            break;
-        case ThreatType::OnScreenRecording:
-            UE_LOG(LogTemp, Warning, TEXT("Screen recording threat detected"));
-            break;
-        case ThreatType::OnPasscode:
-            UE_LOG(LogTemp, Warning, TEXT("Passcode threat detected"));
-            break;
-        case ThreatType::OnPasscodeChange:
-            UE_LOG(LogTemp, Warning, TEXT("Passcode change threat detected"));
-            break;
-        case ThreatType::OnSecureHardwareNotAvailable:
-            UE_LOG(LogTemp, Warning, TEXT("Secure hardware not available threat detected"));
-            break;
-        case ThreatType::OnDevMode:
-            UE_LOG(LogTemp, Warning, TEXT("Dev mode threat detected"));
-            break;
-        case ThreatType::OnADBEnabled:
-            UE_LOG(LogTemp, Warning, TEXT("ADB enabled threat detected"));
-            break;
-        case ThreatType::OnSystemVPN:
-            UE_LOG(LogTemp, Warning, TEXT("System VPN threat detected"));
-            break;
-        case ThreatType::Unknown:
-            UE_LOG(LogTemp, Warning, TEXT("Unknown threat detected"));
-            break;  
-    }
-}
-```
+This project is provided as freemium software, i.e. there is a [fair usage policy](https://docs.talsec.app/freerasp/features-and-pricing-plans#plans-comparison?utm_source=github) that imposes some limitations on the free usage. The SDK software consists of open-source and binary parts, which is the property of Talsec. The open-source part is licensed under the MIT License - see the LICENSE file for details.
