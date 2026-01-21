@@ -4,6 +4,7 @@
 #include "Engine/Engine.h"
 #include "Modules/ModuleManager.h"
 #include "FreeRASPThreatType.h"
+#include "FreeRASPExecutionStatus.h"
 
 #include "FreeRASPPlugin-Swift.h"
 
@@ -24,11 +25,12 @@ extern jobject GGameActivityThis;
 
 // Multicast delegate that can have multiple subscribers
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSecurityThreatDetected, ThreatType, Threat);
-
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnRASPExecutionStatus, RASPExecutionStatus, RASPStatus);
 
 // Forward declaration for JNI function
 #if PLATFORM_ANDROID
 extern "C" JNIEXPORT void JNICALL Java_com_talsec_free_rasp_Controller_threatDetected(JNIEnv* env, jobject thiz, jstring message);
+extern "C" JNIEXPORT void JNICALL Java_com_talsec_free_rasp_Controller_raspExecutionFinished(JNIEnv* env, jobject thiz);
 #endif
 
 UCLASS()
@@ -100,6 +102,21 @@ public:
      void BroadcastSecurityThreat(const ThreatType& Threat);
 
     /**
+     * Broadcasts a RASP status event to the OnRASPStatusDetected delegate.
+     * 
+     * This function is used to notify other parts of the application about the RASP status.
+     * It should be called when the RASP execution has finished, and the delegate will be triggered
+     * to notify any listeners.
+     * 
+     * @param RASPStatus The status of the RASP execution.
+     * 
+     * @see OnRASPExecutionStatus
+     * @see RASPExecutionStatus
+     */
+    UFUNCTION()
+    void BroadcastRASPStatus(const RASPExecutionStatus& RASPStatus);
+
+    /**
      * The delegate that others can bind to
      * 
      * This delegate is used to notify other parts of the application about detected security threats.
@@ -108,6 +125,16 @@ public:
      */
     UPROPERTY()
     FOnSecurityThreatDetected OnSecurityThreatDetected;
+
+    /**
+     * The delegate that others can bind to
+     * 
+     * This delegate is used to notify other parts of the application about the RASP status.
+     * It is triggered when the RASP execution has finished, and the delegate will be triggered
+     * to notify any listeners.
+     */
+    UPROPERTY()
+    FOnRASPExecutionStatus OnRASPExecutionStatus;
 
     /**
      * Sends a security threat notification from native code to Unreal Engine.
@@ -135,6 +162,15 @@ public:
      */
     UFUNCTION()
     static void SendThreatToUE(const FString& threatType);
+
+    /**
+     * Sends a RASP status notification from native code to Unreal Engine.
+     * 
+     * This method is called by the native FreeRASP library (Talsec) during the RASP execution
+     * It broadcasts the RASP status through the OnRASPStatusDetected delegate on the game thread.
+     */
+    UFUNCTION()
+    static void SendRASPStatusToUE();
 
 private:
 #if PLATFORM_ANDROID

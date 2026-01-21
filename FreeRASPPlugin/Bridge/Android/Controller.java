@@ -11,6 +11,7 @@ import android.os.Looper;
 import com.aheaditec.talsec_security.security.api.SuspiciousAppInfo;
 import com.aheaditec.talsec_security.security.api.Talsec;
 import com.aheaditec.talsec_security.security.api.TalsecConfig;
+import com.aheaditec.talsec_security.security.api.TalsecMode;
 import com.aheaditec.talsec_security.security.api.ThreatListener;
 
 import java.util.List;
@@ -20,12 +21,28 @@ public class Controller implements ThreatListener.ThreatDetected, ThreatListener
     private static final String TAG = Controller.class.getSimpleName();
 
     // Native method declaration - implemented in C++
+    // this is used for threat detection
     public static native void threatDetected(String message);
+
+    // Native method declaration - implemented in C++
+    // this is used for notifying the native code that the RASP execution has finished
+    public static native void raspExecutionFinished();
+
+    
+    public static class AppRaspExecutionState extends ThreatListener.RaspExecutionState {
+        @Override
+        public void onAllChecksFinished() {
+            raspExecutionFinished();
+        }
+    }
     
     private boolean talSecInitialized;
     
+    private AppRaspExecutionState appRaspExecutionState;
+
     public Controller() {
         talSecInitialized = false;
+        appRaspExecutionState = new AppRaspExecutionState();
     }
 
     public void initializeTalsec(Context context, String packageName,
@@ -39,9 +56,9 @@ public class Controller implements ThreatListener.ThreatDetected, ThreatListener
                     .watcherMail(watcherEmailAddress)
                     .prod(isProd)
                     .build();
-            ThreatListener threatListener = new ThreatListener(this, this);
+            ThreatListener threatListener = new ThreatListener(this, this, appRaspExecutionState);
             threatListener.registerListener(context);
-            Talsec.start(context, config);
+            Talsec.start(context, config, TalsecMode.BACKGROUND);
             talSecInitialized = true;
         }
     }
@@ -124,5 +141,25 @@ public class Controller implements ThreatListener.ThreatDetected, ThreatListener
     @Override
     public void onSystemVPNDetected() {
         threatDetected("onSystemVPN");
-    }       
+    }
+    
+    @Override
+    public void onMultiInstanceDetected() {
+        threatDetected("onMultiInstance");
+    }
+    
+    @Override
+    public void onUnsecureWifiDetected() {
+        threatDetected("onUnsecureWifi");
+    }
+    
+    @Override
+    public void onTimeSpoofingDetected() {
+        threatDetected("onTimeSpoofing");
+    }
+    
+    @Override
+    public void onLocationSpoofingDetected() {
+        threatDetected("onLocationSpoofing");
+    }
 }

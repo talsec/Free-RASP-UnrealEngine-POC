@@ -24,5 +24,9 @@ enum ThreatType
     OnDevMode,
     OnADBEnabled,
     OnSystemVPN, 
+    OnMultiInstance,
+    OnUnsecureWifi,
+    OnTimeSpoofing,
+    OnLocationSpoofing,
     Unknown,
 };
