@@ -22,12 +22,11 @@ public class Controller implements ThreatListener.ThreatDetected, ThreatListener
 
     // Native method declaration - implemented in C++
     // this is used for threat detection
-    public static native void threatDetected(String message);
+    private static native void threatDetected(String message);
 
     // Native method declaration - implemented in C++
     // this is used for notifying the native code that the RASP execution has finished
-    public static native void raspExecutionFinished();
-
+    private static native void raspExecutionFinished();
     
     public static class AppRaspExecutionState extends ThreatListener.RaspExecutionState {
         @Override

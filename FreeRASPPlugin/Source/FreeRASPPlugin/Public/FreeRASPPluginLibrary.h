@@ -167,7 +167,7 @@ public:
      * Sends a RASP status notification from native code to Unreal Engine.
      * 
      * This method is called by the native FreeRASP library (Talsec) during the RASP execution
-     * It broadcasts the RASP status through the OnRASPStatusDetected delegate on the game thread.
+     * It broadcasts the RASP status through the OnRASPExecutionStatus delegate on the game thread.
      */
     UFUNCTION()
     static void SendRASPStatusToUE();
