@@ -28,7 +28,7 @@ public class Controller implements ThreatListener.ThreatDetected, ThreatListener
     // this is used for notifying the native code that the RASP execution has finished
     private static native void raspExecutionFinished();
     
-    public static class AppRaspExecutionState extends ThreatListener.RaspExecutionState {
+    private static class AppRaspExecutionState extends ThreatListener.RaspExecutionState {
         @Override
         public void onAllChecksFinished() {
             raspExecutionFinished();
