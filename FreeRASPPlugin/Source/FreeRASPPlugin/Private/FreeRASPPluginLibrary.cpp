@@ -25,6 +25,15 @@ extern "C"
         UFreeRASPPluginLibrary::SendThreatToUE(ThreatString);
     }
 }
+
+extern "C" 
+{
+    JNIEXPORT void JNICALL Java_com_talsec_free_rasp_Controller_raspExecutionFinished(JNIEnv* env, jobject thiz) 
+    {
+        UFreeRASPPluginLibrary::SendRASPStatusToUE();
+    }
+   
+}
 #endif
 
 #if PLATFORM_IOS
@@ -143,6 +152,29 @@ void UFreeRASPPluginLibrary::BroadcastSecurityThreat(const ThreatType& Threat)
     OnSecurityThreatDetected.Broadcast(Threat);
 }
 
+void UFreeRASPPluginLibrary::BroadcastRASPStatus(const RASPExecutionStatus& RASPStatus)
+{
+    OnRASPExecutionStatus.Broadcast(RASPStatus);
+}
+
+// static function called by Swift/Objective-C/Java code to send RASP status to UE
+void UFreeRASPPluginLibrary::SendRASPStatusToUE() {
+    if (GEngine && GEngine->GetWorldContexts().Num() > 0)
+    {
+        UWorld* World = GEngine->GetWorldContexts()[0].World();
+        if (World && World->GetGameInstance())
+        {
+            if (UFreeRASPPluginLibrary* Library = World->GetGameInstance()->GetSubsystem<UFreeRASPPluginLibrary>())
+            {
+                AsyncTask(ENamedThreads::GameThread, [Library]()
+                {
+                    Library->BroadcastRASPStatus(RASPExecutionStatus::Finished);
+                });
+            }
+        }
+    }
+
+}
 // static function that is called by Swift/Objective-C/Java code to send the threat to UE
 void UFreeRASPPluginLibrary::SendThreatToUE(const FString& threatType) {
     if (GEngine && GEngine->GetWorldContexts().Num() > 0)
@@ -171,6 +203,10 @@ void UFreeRASPPluginLibrary::SendThreatToUE(const FString& threatType) {
                     {TEXT("onDevMode"), ThreatType::OnDevMode},
                     {TEXT("onADBEnabled"), ThreatType::OnADBEnabled},
                     {TEXT("onSystemVPN"), ThreatType::OnSystemVPN},
+                    {TEXT("onMultiInstance"), ThreatType::OnMultiInstance},
+                    {TEXT("onUnsecureWifi"), ThreatType::OnUnsecureWifi},
+                    {TEXT("onTimeSpoofing"), ThreatType::OnTimeSpoofing},
+                    {TEXT("onLocationSpoofing"), ThreatType::OnLocationSpoofing},
                 };
 
                 ThreatType ThreatEnum = ThreatType::Unknown;

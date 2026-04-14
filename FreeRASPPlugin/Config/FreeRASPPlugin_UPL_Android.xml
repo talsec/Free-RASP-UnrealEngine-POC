@@ -10,7 +10,7 @@
                 }
             }
             dependencies {
-                implementation 'com.aheaditec.talsec.security:TalsecSecurity-Community:15.1.0'
+                implementation 'com.aheaditec.talsec.security:TalsecSecurity-Community-UnrealEngine:17.0.1'
             }
 
             repositories {
